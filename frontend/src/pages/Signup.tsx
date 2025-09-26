@@ -1,6 +1,7 @@
 import { FormEvent, useState } from 'react'
 import { register, login } from '../api'
 import { useNavigate } from 'react-router-dom'
+import { ApiError } from '../api'
 
 export default function Signup() {
   const [email, setEmail] = useState('')
@@ -18,7 +19,11 @@ export default function Signup() {
       await login(email, password)
       navigate('/dashboard')
     } catch (err: any) {
-      setError(err.message || 'Failed to sign up')
+      if (err instanceof ApiError) {
+        setError(`Signup failed (${err.status}) at ${err.url}. Response: ${err.body}`)
+      } else {
+        setError(err?.message || 'Failed to sign up')
+      }
     } finally {
       setLoading(false)
     }
@@ -37,7 +42,7 @@ export default function Signup() {
           Password
           <input type="password" value={password} onChange={e => setPassword(e.target.value)} required />
         </label>
-        {error && <p className="error">{error}</p>}
+        {error && <pre className="error" style={{ whiteSpace: 'pre-wrap' }}>{error}</pre>}
         <button className="btn" disabled={loading}>{loading ? 'Creating...' : 'Create account'}</button>
       </form>
     </div>
