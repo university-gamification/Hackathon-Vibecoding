@@ -1,0 +1,11 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  color-scheme: light dark;
+}
+body { margin: 0; padding: 0; }
+#root { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+.container { max-width: 780px; padding: 2rem; }
+.card { display: flex; gap: .5rem; align-items: center; }
+input { padding: .5rem; }
+button { padding: .5rem 1rem; cursor: pointer; }

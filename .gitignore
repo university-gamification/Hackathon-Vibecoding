@@ -1,0 +1,30 @@
+# Node
+node_modules/
+.npm/
+.pnpm-store/
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.env
+.env.*
+
+# Logs
+logs/
+*.log
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+
+# Build artifacts
+build/
+dist/
+.coverage
+.cache/
+
+# OS
+Thumbs.db
