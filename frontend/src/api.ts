@@ -16,6 +16,11 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * Store or remove the authentication token in localStorage.
+ *
+ * @param token - The token to store under the auth key; if `null`, the stored token is removed
+ */
 export function setToken(token: string | null) {
   if (token) localStorage.setItem(TOKEN_KEY, token);
   else localStorage.removeItem(TOKEN_KEY);
@@ -39,6 +44,16 @@ export function logout() {
   setEmail(null);
 }
 
+/**
+ * Send an HTTP request to the specified path and return the parsed JSON response.
+ *
+ * Adds a `Content-Type: application/json` header, automatically includes `Authorization: Bearer <token>` when a token is stored, and parses the response body as JSON.
+ *
+ * @param path - Request URL or path
+ * @param options - Optional fetch RequestInit to customize the request
+ * @returns The parsed JSON response object, or an empty object if the response has no body or cannot be parsed
+ * @throws ApiError when the HTTP response status is not ok; the error carries `status`, `url`, and `body` (response text)
+ */
 export async function api(path: string, options?: RequestInit) {
   const token = getToken();
   const headers: HeadersInit = {

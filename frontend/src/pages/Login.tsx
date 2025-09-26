@@ -3,6 +3,15 @@ import { login } from '../api'
 import { useNavigate } from 'react-router-dom'
 import { ApiError } from '../api'
 
+/**
+ * Render a sign-in form and handle user authentication.
+ *
+ * Attempts to authenticate with the provided email and password; on success navigates to `/dashboard`.
+ * While the request is in progress the submit button is disabled. If authentication fails, displays an error message;
+ * if the error is an `ApiError` the message includes the HTTP status, request URL, and response body, otherwise it shows the error's message or a generic failure message.
+ *
+ * @returns The React element containing the sign-in form, controls for email and password, loading state, and error display.
+ */
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
