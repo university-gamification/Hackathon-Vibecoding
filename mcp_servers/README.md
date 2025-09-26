@@ -17,3 +17,8 @@ Then connect with a compatible MCP client or pipe JSON-RPC requests to stdin.
 ## Next steps
 - Define `list_tools`, `call_tool`, and `resources` to expose your capabilities.
 - Add auth or configuration via environment variables.
+
+### continuation
+- Create a better interface
+- Add track of assessments
+- Add MCPs
