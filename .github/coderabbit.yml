@@ -1,0 +1,53 @@
+version: 1
+# CodeRabbit default configuration for PR reviews
+review:
+  enabled: true
+  auto_review:
+    enabled: true
+    triggers:
+      - open
+      - synchronize
+  summarize_findings: true
+  path_filters:
+    include:
+      - "backend/**"
+      - "frontend/**"
+      - "mcp_servers/**"
+      - "README.md"
+    exclude:
+      - "**/*.md"
+      - "**/*.png"
+      - "**/*.jpg"
+  rules:
+    - name: FastAPI best practices
+      applies_to:
+        - "backend/**"
+      checks:
+        - description: Ensure routers are modular and dependencies are injected via Depends
+        - description: Validate request bodies with Pydantic schemas
+        - description: Handle auth and permissions for protected routes
+    - name: React + TypeScript best practices
+      applies_to:
+        - "frontend/**"
+      checks:
+        - description: Use proper types for component props and state
+        - description: Avoid inline anonymous functions for heavy handlers
+        - description: Prefer React Router for navigation and proper error handling
+        - description: Keep API calls centralized
+    - name: Security
+      checks:
+        - description: Do not commit secrets; use env variables for secrets and keys
+        - description: Validate user input and sanitize uploaded files
+        - description: JWT handling and storage best practices
+comments:
+  max_comments: 50
+  min_severity: suggestion
+  group_similar_comments: true
+
+labels:
+  enabled: true
+  mappings:
+    - label: "review: changes requested"
+      when: any_critical
+    - label: "review: suggestions"
+      when: any_suggestions
