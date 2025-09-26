@@ -4,8 +4,45 @@
   color-scheme: light dark;
 }
 body { margin: 0; padding: 0; }
-#root { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-.container { max-width: 780px; padding: 2rem; }
-.card { display: flex; gap: .5rem; align-items: center; }
-input { padding: .5rem; }
-button { padding: .5rem 1rem; cursor: pointer; }
+#root { min-height: 100vh; }
+.app { display: flex; flex-direction: column; min-height: 100vh; }
+.main { flex: 1; display: flex; justify-content: center; }
+.container { width: 100%; max-width: 1000px; padding: 2rem; }
+.container.narrow { max-width: 720px; }
+
+.nav { display: flex; gap: 1rem; align-items: center; padding: 0.75rem 1rem; border-bottom: 1px solid #ddd; position: sticky; top: 0; backdrop-filter: blur(6px); }
+.nav .brand { font-weight: 700; text-decoration: none; }
+.nav .spacer { flex: 1; }
+.nav .links { display: flex; gap: 1rem; }
+.nav a { text-decoration: none; }
+
+.hero { text-align: center; padding: 3rem 1rem; }
+.hero h1 { font-size: clamp(1.8rem, 4vw, 3rem); margin: 0 0 1rem; }
+.hero p { margin: 0 auto 1.5rem; max-width: 780px; }
+.btn { display: inline-block; padding: .65rem 1.1rem; border: 1px solid #0a5c3c; border-radius: 8px; cursor: pointer; color: #fff; background: #0f7a50; box-shadow: 0 1px 0 rgba(0,0,0,.05) inset; }
+.btn:hover { background: #0c6a45; }
+.btn.btn-ghost { background: transparent; color: inherit; border-color: transparent; }
+.btn.btn-ghost:hover { background: rgba(0,0,0,.06); }
+
+.benefits .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.benefits h3 { margin: 0 0 .25rem; }
+.benefits p { margin: 0; opacity: .9; }
+
+@media (max-width: 900px) {
+  .benefits .grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 520px) {
+  .benefits .grid { grid-template-columns: 1fr; }
+  .nav .links { display: none; }
+}
+
+.form { display: grid; gap: .75rem; }
+.form label { display: grid; gap: .25rem; font-size: .95rem; }
+.form input, .form textarea { padding: .6rem .7rem; border-radius: 8px; border: 1px solid #bbb; font: inherit; }
+.form textarea { resize: vertical; }
+.error { color: #b00020; }
+.hint { opacity: .9; }
+
+.actions { display: flex; gap: .75rem; align-items: center; margin: 1rem 0; flex-wrap: wrap; }
+.list { list-style: none; padding: 0; margin: .5rem 0; }
+.list li { display: flex; justify-content: space-between; padding: .5rem .25rem; border-bottom: 1px dashed #ddd; }

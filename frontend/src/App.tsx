@@ -1,41 +1,26 @@
-import { useEffect, useState } from 'react'
-import { api } from './api'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import Home from './pages/Home'
+import Signup from './pages/Signup'
+import Login from './pages/Login'
+import Dashboard from './pages/Dashboard'
+import Assess from './pages/Assess'
+import { Navbar } from './components/Navbar'
+import { ProtectedRoute } from './components/ProtectedRoute'
 
 function App() {
-  const [status, setStatus] = useState('')
-
-  useEffect(() => {
-    api('/api/health')
-      .then(res => setStatus(res.status))
-      .catch(() => setStatus('unavailable'))
-  }, [])
-
   return (
-    <div className="container">
-      <h1>Hackathon-09-26</h1>
-      <p>Backend status: <strong>{status || 'checking...'}</strong></p>
-      <section>
-        <h2>Echo test</h2>
-        <Echo />
-      </section>
-    </div>
-  )
-}
-
-function Echo() {
-  const [msg, setMsg] = useState('Hello world')
-  const [reply, setReply] = useState('')
-
-  async function send() {
-    const data = await api(`/api/echo?msg=${encodeURIComponent(msg)}`)
-    setReply(data.reply)
-  }
-
-  return (
-    <div className="card">
-      <input value={msg} onChange={e => setMsg(e.target.value)} />
-      <button onClick={send}>Send</button>
-      {reply && <p>Reply: {reply}</p>}
+    <div className="app">
+      <Navbar />
+      <main className="main">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/assess" element={<ProtectedRoute><Assess /></ProtectedRoute>} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </main>
     </div>
   )
 }
