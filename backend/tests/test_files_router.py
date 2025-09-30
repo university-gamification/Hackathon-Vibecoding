@@ -540,7 +540,7 @@ class TestDownloadFile:
 
 class TestFileRouterIntegration:
     """Integration tests for the complete file router workflow"""
-    
+
     @patch('backend.api.routers.files.ensure_user_dir')
     @patch('backend.api.routers.files.get_current_user')
     @patch('backend.api.routers.files.get_db')
@@ -550,19 +550,55 @@ class TestFileRouterIntegration:
         mock_get_current_user.return_value = mock_user
         mock_get_db.return_value = mock_db
         mock_ensure_user_dir.return_value = temp_user_dir
-        
-        # Test file upload
+
+        # Upload
         file_content = b"Integration test content"
-        files = {"files": ("integration_test.txt", io.BytesIO(file_content), "text/plain")}
-        
+        filename = "integration_test.txt"
+        files = {"files": (filename, io.BytesIO(file_content), "text/plain")}
         upload_response = client.post("/files/upload", files=files)
         assert upload_response.status_code == 200
-        assert "integration_test.txt" in upload_response.json()["saved"]
-        
+        assert filename in upload_response.json()["saved"]
+
         # Verify file exists on disk
-        uploaded_file = temp_user_dir / "integration_test.txt"
+        uploaded_file = temp_user_dir / filename
         assert uploaded_file.exists()
         assert uploaded_file.read_bytes() == file_content
+
+        # Prepare a mock Document returned by list & download queries
+        doc = Mock(spec=Document)
+        doc.id = 99
+        doc.filename = filename
+        doc.path = str(uploaded_file)
+        # created_at.isoformat used by the list endpoint
+        doc.created_at = Mock()
+        doc.created_at.isoformat.return_value = "2023-01-01T00:00:00"
+
+        # Configure list query chain
+        mock_query = Mock()
+        mock_filter = Mock()
+        mock_order_by = Mock()
+        mock_db.query.return_value = mock_query
+        mock_query.filter.return_value = mock_filter
+        mock_filter.order_by.return_value = mock_order_by
+        mock_order_by.all.return_value = [doc]
+
+        # List
+        list_response = client.get("/files/")
+        assert list_response.status_code == 200
+        data = list_response.json()
+        assert any(item["filename"] == filename for item in data)
+
+        # Configure download query chain
+        mock_query2 = Mock()
+        mock_filter2 = Mock()
+        mock_db.query.return_value = mock_query2
+        mock_query2.filter.return_value = mock_filter2
+        mock_filter2.first.return_value = doc
+
+        # Download
+        dl_response = client.get("/files/download/99")
+        assert dl_response.status_code == 200
+        assert dl_response.content == file_content
 
     @patch('backend.api.routers.files.ensure_user_dir')
     @patch('backend.api.routers.files.get_current_user')

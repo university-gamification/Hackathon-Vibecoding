@@ -11,6 +11,8 @@ export default defineConfig({
   ],
   server: {
     port: 3003,
-    allowedHosts: true,
+    // Restrict allowed hosts to avoid DNS rebinding risks.
+    // Never use permissive settings in production.
+    allowedHosts: ["localhost", "127.0.0.1"],
   },
 });

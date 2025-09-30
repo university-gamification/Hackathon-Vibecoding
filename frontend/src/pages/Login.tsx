@@ -7,8 +7,11 @@ import { ApiError } from '../api'
  * Render a sign-in form and handle user authentication.
  *
  * Attempts to authenticate with the provided email and password; on success navigates to `/dashboard`.
- * While the request is in progress the submit button is disabled. If authentication fails, displays an error message;
- * if the error is an `ApiError` the message includes the HTTP status, request URL, and response body, otherwise it shows the error's message or a generic failure message.
+ * While the request is in progress the submit button is disabled. If authentication fails, displays an error message.
+ * If the error is an `ApiError`, the UI shows a brief message containing the HTTP status only
+ * (e.g., "Login failed (STATUS). Please check your credentials and try again."),
+ * and logs the full technical details (status, request URL, response body) to the console for debugging.
+ * For non-`ApiError` cases, it shows the error message or a generic failure message.
  *
  * @returns The React element containing the sign-in form, controls for email and password, loading state, and error display.
  */

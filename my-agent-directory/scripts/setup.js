@@ -33,27 +33,40 @@ async function setupProject() {
         return;
       }
     } catch (error) {
-      // Project doesn't exist, continue with creation
+      // Only ignore known "not found" cases; surface other errors
+      const msg = String(error?.message || '').toLowerCase();
+      const code = (error && (error.code || error.status || error.name)) || '';
+      const isNotFound = msg.includes('not found') || msg.includes("doesn't exist") || String(code).toLowerCase() === 'not_found';
+      if (!isNotFound) {
+        console.error('❌ Unexpected error while checking project existence:', error);
+        throw error;
+      }
+      // Continue with creation
     }
     
     // Create the project in the database
     console.log('📦 Creating project in database...');
+    // Build models configuration from environment or use defaults
+    let modelsConfig;
+    try {
+      modelsConfig = process.env.MODELS_CONFIG ? JSON.parse(process.env.MODELS_CONFIG) : undefined;
+    } catch (e) {
+      console.warn('⚠️ Failed to parse MODELS_CONFIG; falling back to defaults:', e);
+    }
+    if (!modelsConfig || typeof modelsConfig !== 'object') {
+      modelsConfig = {
+        base: { model: 'anthropic/claude-sonnet-4-0' },
+        structuredOutput: { model: 'openai/gpt-4.1-mini' },
+        summarizer: { model: 'openai/gpt-4.1-nano' },
+      };
+    }
+
     await createProject(dbClient)({
       id: projectId,
       tenantId: tenantId,
       name: projectName,
       description: projectDescription,
-      models: {
-  "base": {
-    "model": "anthropic/claude-sonnet-4-20250514"
-  },
-  "structuredOutput": {
-    "model": "openai/gpt-4.1-mini-2025-04-14"
-  },
-  "summarizer": {
-    "model": "openai/gpt-4.1-nano-2025-04-14"
-  }
-},
+      models: modelsConfig,
     });
     
     console.log('✅ Project created successfully!');

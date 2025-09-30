@@ -9,7 +9,6 @@ import { weatherMcpTool } from '../tools/weather-mcp';
 const requestSchema = z.object({
   tz: z.string(),
 });
-
 // 2. Create the fetcher
 const timeFetcher = fetchDefinition({
   id: "time-info",
@@ -19,21 +18,21 @@ const timeFetcher = fetchDefinition({
     url: "https://world-time-api3.p.rapidapi.com/timezone/{{requestContext.tz}}",
     method: "GET",
     headers: {
-      "x-rapidapi-key": "590c52974dmsh0da44377420ef4bp1c64ebjsnf8d55149e28d",
+      // Read API key from environment; ensure it's configured in your runtime
+      "x-rapidapi-key": process.env.RAPIDAPI_KEY ?? "",
     },
   },
   responseSchema: z.object({
     datetime: z.string(),
     timezone: z.string().optional(),
   }),
-  defaultValue: "Unable to fetch time information",
+  defaultValue: { datetime: "Unavailable", timezone: undefined },
 });
 
 // 3. Configure context
 const timeContext = contextConfig({
   id: "time-context",
   name: "Time Context",
-  description: "Fetches time information for personalization",
   requestContextSchema: requestSchema,
   contextVariables: {
     time: timeFetcher,

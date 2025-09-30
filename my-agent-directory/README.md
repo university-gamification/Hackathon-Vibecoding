@@ -6,7 +6,7 @@ An Inkeep Agent Framework project with multi-service architecture.
 
 This project follows a workspace structure with the following services:
 
-- **Agents Manage API** (Port 3002): Agent configuration and managemen
+- **Agents Manage API** (Port 3002): Agent configuration and management
   - Handles entity management and configuration endpoints.
 - **Agents Run API** (Port 3003): Agent execution and chat processing  
   - Handles agent communication. You can interact with your agents either over MCP from an MCP client or through our React UI components library
@@ -39,8 +39,8 @@ This project follows a workspace structure with the following services:
    # Push the weather graph to create it
    inkeep push weather.graph.ts
    ```
-  - Follow the prompts to create the project and graph
-  - Click on the "View graph in UI:" link to see the graph in the management dashboard
+- Follow the prompts to create the project and graph
+- Click on the "View graph in UI:" link to see the graph in the management dashboard
 
 ## Project Structure
 
@@ -81,7 +81,7 @@ OPENAI_API_KEY=your-openai-key-here
 
 ### Agent Configuration
 
-Your graphs are defined in `src<project-name>weather.graph.ts`. The default setup includes:
+Your graphs are defined in `src/<project-name>/weather.graph.ts`. The default setup includes:
 
 - **Weather Graph**: A graph that can forecast the weather in a given location.
 
@@ -98,7 +98,7 @@ Your inkeep configuration is defined in `src/<project-name>/inkeep.config.ts`. T
 ### Updating Your Agents
 
 1. Edit `src/<project-name>/weather.graph.ts`
-2. Push the graph to the platform to update: `inkeep pus weather.graph.ts` 
+2. Push the graph to the platform to update: `inkeep push weather.graph.ts` 
 
 ### API Documentation
 
