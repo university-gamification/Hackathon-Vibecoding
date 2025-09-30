@@ -4,7 +4,7 @@ from typing import Optional
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
-PASSWORD_CONTEXT = CryptContext(schemes=["bcrypt"], deprecated="auto")
+PASSWORD_CONTEXT = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 # In production, set via env variable
 JWT_SECRET = "change-me-in-env"

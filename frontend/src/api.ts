@@ -3,6 +3,19 @@ export type Json = Record<string, any>;
 const TOKEN_KEY = 'auth_token';
 const EMAIL_KEY = 'auth_email';
 
+export class ApiError extends Error {
+  status: number;
+  url: string;
+  body: string;
+  constructor(message: string, status: number, url: string, body: string) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.url = url;
+    this.body = body;
+  }
+}
+
 export function setToken(token: string | null) {
   if (token) localStorage.setItem(TOKEN_KEY, token);
   else localStorage.removeItem(TOKEN_KEY);
@@ -38,8 +51,10 @@ export async function api(path: string, options?: RequestInit) {
     ...options,
     headers,
   });
-  if (!res.ok) throw new Error(await res.text());
   const text = await res.text();
+  if (!res.ok) {
+    throw new ApiError(`Request failed (${res.status})`, res.status, path, text || '');
+  }
   try { return text ? JSON.parse(text) : {}; } catch { return {}; }
 }
 

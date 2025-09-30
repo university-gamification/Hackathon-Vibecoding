@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import List
 
 from fastapi import APIRouter, Depends, File, UploadFile, HTTPException
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
 from ..deps import get_current_user
@@ -40,4 +41,33 @@ def list_files(
     db: Session = Depends(get_db),
 ):
     docs = db.query(Document).filter(Document.user_id == current_user.id).order_by(Document.created_at.desc()).all()
-    return [{"id": d.id, "filename": d.filename, "created_at": d.created_at.isoformat()} for d in docs]
+    return [
+        {
+            "id": d.id,
+            "filename": d.filename,
+            "path": d.path,
+            "created_at": d.created_at.isoformat(),
+        }
+        for d in docs
+    ]
+
+
+@router.get("/download/{doc_id}")
+def download_file(
+    doc_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    doc = db.query(Document).filter(Document.id == doc_id, Document.user_id == current_user.id).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="File not found")
+    path = Path(doc.path)
+    # Ensure the file resides under the user's directory for safety
+    user_dir = ensure_user_dir(current_user.id)
+    try:
+        path.resolve().relative_to(user_dir.resolve())
+    except Exception:  # noqa: BLE001
+        raise HTTPException(status_code=403, detail="Access denied")
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="File missing on disk")
+    return FileResponse(path, filename=doc.filename)

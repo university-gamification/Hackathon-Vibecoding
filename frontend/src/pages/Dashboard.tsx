@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { listFiles, uploadFiles, buildRag } from '../api'
 
 export default function Dashboard() {
-  const [files, setFiles] = useState<{ id: number; filename: string; created_at: string }[]>([])
+  const [files, setFiles] = useState<{ id: number; filename: string; created_at: string; path?: string }[]>([])
   const [uploading, setUploading] = useState(false)
   const [building, setBuilding] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
@@ -72,8 +72,14 @@ export default function Dashboard() {
       <ul className="list">
         {files.map(f => (
           <li key={f.id}>
-            <span>{f.filename}</span>
-            <small>{new Date(f.created_at).toLocaleString()}</small>
+            <div style={{ display: 'grid', gap: 2 }}>
+              <strong>{f.filename}</strong>
+              {f.path && <small style={{ opacity: .8 }}>{f.path}</small>}
+            </div>
+            <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center' }}>
+              <small>{new Date(f.created_at).toLocaleString()}</small>
+              <a className="btn" href={`/api/files/download/${f.id}`} target="_blank" rel="noreferrer">Download</a>
+            </div>
           </li>
         ))}
         {files.length === 0 && <li><em>No files yet</em></li>}

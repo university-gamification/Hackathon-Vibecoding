@@ -1,6 +1,7 @@
 import { FormEvent, useState } from 'react'
 import { login } from '../api'
 import { useNavigate } from 'react-router-dom'
+import { ApiError } from '../api'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -17,7 +18,11 @@ export default function Login() {
       await login(email, password)
       navigate('/dashboard')
     } catch (err: any) {
-      setError(err.message || 'Failed to log in')
+      if (err instanceof ApiError) {
+        setError(`Login failed (${err.status}) at ${err.url}. Response: ${err.body}`)
+      } else {
+        setError(err?.message || 'Failed to log in')
+      }
     } finally {
       setLoading(false)
     }
@@ -35,7 +40,7 @@ export default function Login() {
           Password
           <input type="password" value={password} onChange={e => setPassword(e.target.value)} required />
         </label>
-        {error && <p className="error">{error}</p>}
+        {error && <pre className="error" style={{ whiteSpace: 'pre-wrap' }}>{error}</pre>}
         <button className="btn" disabled={loading}>{loading ? 'Signing in...' : 'Sign in'}</button>
       </form>
     </div>
