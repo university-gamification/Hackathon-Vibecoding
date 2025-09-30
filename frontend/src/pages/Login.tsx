@@ -28,7 +28,10 @@ export default function Login() {
       navigate('/dashboard')
     } catch (err: any) {
       if (err instanceof ApiError) {
-        setError(`Login failed (${err.status}) at ${err.url}. Response: ${err.body}`)
+        // Log full technical details for developers
+        console.error('Login error', { status: err.status, url: err.url, body: err.body });
+        // Show a concise, user-friendly message without internal URLs or bodies
+        setError(`Login failed (${err.status}). Please check your credentials and try again.`)
       } else {
         setError(err?.message || 'Failed to log in')
       }

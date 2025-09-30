@@ -98,12 +98,16 @@ export async function uploadFiles(files: File[]) {
   const token = getToken();
   const form = new FormData();
   for (const f of files) form.append('files', f, f.name);
-  const res = await fetch('/api/files/upload', {
+  const path = '/api/files/upload';
+  const res = await fetch(path, {
     method: 'POST',
     headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     body: form,
   });
-  if (!res.ok) throw new Error(await res.text());
+  if (!res.ok) {
+    const text = await res.text();
+    throw new ApiError(`Request failed (${res.status})`, res.status, path, text || '');
+  }
   return res.json();
 }
 

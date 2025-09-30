@@ -55,7 +55,6 @@ def list_files(
         {
             "id": d.id,
             "filename": d.filename,
-            "path": d.path,
             "created_at": d.created_at.isoformat(),
         }
         for d in docs
