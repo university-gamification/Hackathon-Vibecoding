@@ -3,6 +3,12 @@ import { contextConfig, fetchDefinition } from "@inkeep/agents-core";
 import { z } from "zod";
 import { weatherMcpTool } from '../tools/weather-mcp';
 
+// Validate required environment variables at module load
+const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
+if (!RAPIDAPI_KEY || RAPIDAPI_KEY.trim().length === 0) {
+  throw new Error("RAPIDAPI_KEY environment variable is required");
+}
+
 // 1. Create the request schema
 // You can find a timezone list here: https://github.com/davidayalas/current-time?tab=readme-ov-file
 // Example: US/Pacific, US/Eastern, etc.
@@ -18,8 +24,8 @@ const timeFetcher = fetchDefinition({
     url: "https://world-time-api3.p.rapidapi.com/timezone/{{requestContext.tz}}",
     method: "GET",
     headers: {
-      // Read API key from environment; ensure it's configured in your runtime
-      "x-rapidapi-key": process.env.RAPIDAPI_KEY ?? "",
+      // Use validated API key
+      "x-rapidapi-key": RAPIDAPI_KEY,
     },
   },
   responseSchema: z.object({
