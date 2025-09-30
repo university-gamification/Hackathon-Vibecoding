@@ -24,7 +24,6 @@ class Token(BaseModel):
 class DocumentOut(BaseModel):
     id: int
     filename: str
-    path: str
     created_at: datetime
 
     class Config:

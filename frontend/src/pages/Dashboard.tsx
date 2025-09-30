@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react'
 import { listFiles, uploadFiles, buildRag } from '../api'
 
+/**
+ * Renders the user dashboard for uploading files, viewing recent uploads, and building a RAG index.
+ *
+ * Displays upload and build controls, shows status messages, and lists recent files (filename, optional path, timestamp) with download links.
+ *
+ * @returns The rendered Dashboard component JSX
+ */
 export default function Dashboard() {
   const [files, setFiles] = useState<{ id: number; filename: string; created_at: string; path?: string }[]>([])
   const [uploading, setUploading] = useState(false)

@@ -3,6 +3,14 @@ import { register, login } from '../api'
 import { useNavigate } from 'react-router-dom'
 import { ApiError } from '../api'
 
+/**
+ * Render a signup page and handle creating a new user, signing them in, and navigating to the dashboard.
+ *
+ * Displays a form with email and password inputs, shows API error details when signup fails,
+ * and disables the submit button while the request is in progress.
+ *
+ * @returns The JSX element for the signup page containing the form, error display, and submit button.
+ */
 export default function Signup() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
