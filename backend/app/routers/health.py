@@ -7,6 +7,20 @@ router = APIRouter()
 
 @router.get("/health")
 def health():
+    """
+    Run health checks for database connectivity, internet reachability, and memory availability.
+    
+    Performs three checks and aggregates results into a dictionary describing overall service health and individual check details.
+    
+    Returns:
+        result (dict): Health report with keys:
+            - "status" (str): "ok" if all checks pass, "degraded" if any check fails.
+            - "checks" (dict): Mapping of check name to its result object:
+                - "database": {"ok": bool, "detail": str or None} — connection status or error message.
+                - "internet": {"ok": bool, "detail": str or None} — HTTP status detail or error message.
+                - "memory": {"ok": bool, "detail": dict or None} — memory metrics or error message.
+                  When present, memory detail contains "total_mb", "available_mb", and "percent". Memory is considered ok only when available memory is greater than 100 MB.
+    """
     result = {
         "status": "ok",
         "checks": {
